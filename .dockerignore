@@ -1,0 +1,9 @@
+# Exclude node modules, which are the main source of bloat
+node_modules
+frontend/node_modules
+
+# Exclude files not needed for the build itself
+.git
+.gitignore
+.dockerignore
+README.md
