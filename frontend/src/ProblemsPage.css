@@ -1,161 +1,123 @@
+/* src/ProblemsPage.css */
 .problems-page {
-    display: flex;
-    min-height: 100vh;
-    background-color: #0f0f0f;
-    color: #fff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  .left-panel {
-    width: 40%;
-    border-right: 1px solid #333;
-    display: flex;
-    flex-direction: column;
-  }
-  .right-panel {
-    width: 60%;
-    display: flex;
-    flex-direction: column;
-  }
-  .problem-list {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-  }
-  .problem-list h2 {
-    margin-bottom: 10px;
-  }
-  .add-btn {
-    background: #61dafb;
-    color: #000;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 20px;
-  }
-  .problem-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border: 1px solid #333;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    cursor: pointer;
-  }
-  .problem-item div {
-    flex: 1;
-  }
-  .problem-item button {
-    background: #ff4757;
-    color: white;
-    border: none;
-    padding: 4px 8px;
-    border-radius: 2px;
-    cursor: pointer;
-  }
-  .problem-form {
-    padding: 20px;
-    border-top: 1px solid #333;
-  }
-  .problem-form textarea,
-  .problem-form input {
-    width: 100%;
-    background: #1e1e1e;
-    color: #fff;
-    border: 1px solid #333;
-    border-radius: 4px;
-    padding: 8px;
-    margin-bottom: 10px;
-    font-family: monospace;
-  }
-  .test-case {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .test-case input {
-    flex: 1;
-  }
-  .problem-form button {
-    background: #4caf50;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 10px;
-  }
-  .code-editor {
-    flex: 1;
-    padding: 20px;
-    border-bottom: 1px solid #333;
-    display: flex;
-    flex-direction: column;
-    min-height: 500px;
-  }
-  .code-editor h3 {
-    margin-bottom: 10px;
-  }
-  .code-editor button {
-    align-self: flex-start;
-    background: #61dafb;
-    color: #000;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  .results {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-  }
-  .results h3 {
-    margin-bottom: 10px;
-  }
-  .spinner {
-    text-align: center;
-    color: #61dafb;
-  }
-  .pass {
-    color: #4caf50;
-  }
-  .fail {
-    color: #ff4757;
-  }
-  .error {
-    color: #ff4757;
-    background: #1e1e1e;
-    padding: 10px;
-    border-radius: 4px;
-  }
-  @media (max-width: 768px) {
-    .problems-page {
-      flex-direction: column;
-    }
-    .left-panel, .right-panel {
-      width: 100%;
-    }
-  }
-  
+  display: flex;
+  height: 100vh; /* Changed from min-height to ensure a fixed viewport height */
+  background-color: #0f0f0f;
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.left-panel, .right-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Changed from auto to prevent double scrollbars */
+  padding: 20px;
+}
+
+.left-panel {
+  width: 40%;
+  border-right: 1px solid #333;
+}
+
+.right-panel {
+  width: 60%;
+}
+
+.problem-statement-section {
+  height: 70%; /* Set fixed height */
+  overflow-y: auto; /* Add scrollbar for overflow */
+  margin-bottom: 20px;
+  display: flex; /* Added to help child component fill the space */
+  flex-direction: column; /* Added for child component layout */
+}
+
+/* Make the markdown editor fill the available space */
+.problem-statement-section .mdxeditor {
+  flex-grow: 1;
+}
+
+.test-cases-section {
+  height: 30%; /* Set fixed height */
+  overflow-y: auto; /* Add scrollbar for overflow */
+  border-top: 1px solid #333;
+  padding-top: 20px;
+}
+
+.test-case {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.test-case input {
+  flex: 1;
+  background: #1e1e1e;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 8px;
+  font-family: monospace;
+}
+
+.test-cases-section button {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.test-cases-section button.save-btn {
+  background: #61dafb;
+  color: #000;
+}
+
+/* Styles for the MDX Editor dark theme */
+.dark-theme {
+  --mdxeditor-background-color: #1e1e1e;
+  --mdxeditor-foreground-color: #fff;
+  --mdxeditor-border-color: #333;
+  --mdxeditor-active-color: #61dafb;
+}
+
+.code-editor {
+  flex: 1;
+  border-bottom: 1px solid #333;
+  min-height: 500px;
+}
+
+.code-editor button {
+  align-self: flex-start;
+  background: #61dafb;
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.results {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.spinner {
+  text-align: center;
+  color: #61dafb;
+}
+.pass { color: #4caf50; }
+.fail, .error { color: #ff4757; }
+.error { background: #1e1e1e; padding: 10px; border-radius: 4px; }
+
 .divider {
-    position: absolute;
-    width: 5px;
-    background-color: #333;
-    cursor: col-resize;
-    z-index: 10;
-    top: 0;
-    bottom: 0;
-    transition: left 0.1s ease;
-  }
-  
-  .right-panel {
-    transition: width 0.1s ease;
-  }
-  
-  /* Optional: Hide right panel when collapsed (add if not working) */
-  .right-panel.collapsed {
-    display: none;
-  }
+  position: absolute;
+  width: 5px;
+  background-color: #333;
+  cursor: col-resize;
+  z-index: 10;
+  top: 0;
+  bottom: 0;
+}
