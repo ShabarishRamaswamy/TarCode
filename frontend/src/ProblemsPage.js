@@ -2,8 +2,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import Editor from '@monaco-editor/react';
-import { MDXEditor } from '@mdxeditor/editor';
-import '@mdxeditor/editor/style.css';
+import ReactMarkdown from 'react-markdown';
 import './ProblemsPage.css';
 
 const API_BASE = 'http://localhost:8001/api';
@@ -11,6 +10,7 @@ const API_BASE = 'http://localhost:8001/api';
 const ProblemsPage = () => {
   // State for a single problem
   const [problemStatement, setProblemStatement] = useState("**Problem Title**\n\nEnter your markdown-enabled problem description here.");
+  const [markdownMode, setMarkdownMode] = useState('editor'); // 'editor' or 'preview'
   const [testCases, setTestCases] = useState([{ input: '', expected: '' }]);
 
   // State for code editor and results
@@ -122,12 +122,35 @@ const ProblemsPage = () => {
     >
       <div className="left-panel" style={{ width: `${dividerPosition}%` }}>
         <div className="problem-statement-section">
-          <h3>Problem Statement</h3>
-          <MDXEditor
-            markdown={problemStatement}
-            onChange={setProblemStatement}
-            className="dark-theme"
-          />
+          <div className="section-header">
+            <h3>Problem Statement</h3>
+            <div className="view-toggle">
+              <button onClick={() => setMarkdownMode('editor')} className={markdownMode === 'editor' ? 'active' : ''}>Editor</button>
+              <button onClick={() => setMarkdownMode('preview')} className={markdownMode === 'preview' ? 'active' : ''}>Preview</button>
+            </div>
+          </div>
+          <div className="markdown-container">
+            {markdownMode === 'editor' ? (
+              <Editor
+                height="100%"
+                language="markdown"
+                value={problemStatement}
+                onChange={setProblemStatement}
+                theme="vs-dark"
+                options={{
+                  minimap: { enabled: false },
+                  wordWrap: 'on',
+                  fontSize: 14,
+                  scrollBeyondLastLine: false,
+                  renderLineHighlight: 'none',
+                }}
+              />
+            ) : (
+              <div className="markdown-preview">
+                <ReactMarkdown children={problemStatement} />
+              </div>
+            )}
+          </div>
         </div>
         <div className="test-cases-section">
           <h3>Test Cases</h3>
