@@ -157,21 +157,23 @@ const ProblemsPage = () => {
       <div className="right-panel" style={{ width: `${100 - dividerPosition}%` }}>
         <div className="code-editor">
           <h3>Code Editor</h3>
-          <Editor
-            height="60vh"
-            language="c"
-            value={code}
-            onChange={setCode}
-            theme="vs-dark"
-            onMount={handleEditorDidMount}
-            options={{
-              minimap: { enabled: false },
-              scrollBeyondLastLine: false,
-              fontSize: 14,
-              wordWrap: 'on',
-              renderLineHighlight: 'none',
-            }}
-          />
+          <div className="editor-container">
+            <Editor
+              height="100%"
+              language="c"
+              value={code}
+              onChange={setCode}
+              theme="vs-dark"
+              onMount={handleEditorDidMount}
+              options={{
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                fontSize: 14,
+                wordWrap: 'on',
+                renderLineHighlight: 'none',
+              }}
+            />
+          </div>
           <button onClick={runCode} disabled={loading}>
             {loading ? 'Running...' : 'Run'}
           </button>

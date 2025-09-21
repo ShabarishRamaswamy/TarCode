@@ -1,7 +1,7 @@
 /* src/ProblemsPage.css */
 .problems-page {
   display: flex;
-  height: 100vh; /* Changed from min-height to ensure a fixed viewport height */
+  height: 100vh;
   background-color: #0f0f0f;
   color: #fff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -10,13 +10,13 @@
 .left-panel, .right-panel {
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Changed from auto to prevent double scrollbars */
-  padding: 20px;
+  overflow: hidden;
+  padding: 1.25rem; /* 20px */
 }
 
 .left-panel {
   width: 40%;
-  border-right: 1px solid #333;
+  border-right: 0.0625rem solid #333; /* 1px */
 }
 
 .right-panel {
@@ -24,38 +24,37 @@
 }
 
 .problem-statement-section {
-  height: 70%; /* Set fixed height */
-  overflow-y: auto; /* Add scrollbar for overflow */
-  margin-bottom: 20px;
-  display: flex; /* Added to help child component fill the space */
-  flex-direction: column; /* Added for child component layout */
+  height: 70%;
+  overflow-y: auto;
+  margin-bottom: 1.25rem; /* 20px */
+  display: flex;
+  flex-direction: column;
 }
 
-/* Make the markdown editor fill the available space */
 .problem-statement-section .mdxeditor {
   flex-grow: 1;
 }
 
 .test-cases-section {
-  height: 30%; /* Set fixed height */
-  overflow-y: auto; /* Add scrollbar for overflow */
-  border-top: 1px solid #333;
-  padding-top: 20px;
+  height: 30%;
+  overflow-y: auto;
+  border-top: 0.0625rem solid #333; /* 1px */
+  padding-top: 1.25rem; /* 20px */
 }
 
 .test-case {
   display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 0.625rem; /* 10px */
+  margin-bottom: 0.625rem; /* 10px */
 }
 
 .test-case input {
   flex: 1;
   background: #1e1e1e;
   color: #fff;
-  border: 1px solid #333;
-  border-radius: 4px;
-  padding: 8px;
+  border: 0.0625rem solid #333; /* 1px */
+  border-radius: 0.25rem; /* 4px */
+  padding: 0.5rem; /* 8px */
   font-family: monospace;
 }
 
@@ -63,10 +62,10 @@
   background: #4caf50;
   color: white;
   border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
+  padding: 0.5rem 1rem; /* 8px 16px */
+  border-radius: 0.25rem; /* 4px */
   cursor: pointer;
-  margin-right: 10px;
+  margin-right: 0.625rem; /* 10px */
 }
 
 .test-cases-section button.save-btn {
@@ -74,34 +73,33 @@
   color: #000;
 }
 
-/* Styles for the MDX Editor dark theme */
-.dark-theme {
-  --mdxeditor-background-color: #1e1e1e;
-  --mdxeditor-foreground-color: #fff;
-  --mdxeditor-border-color: #333;
-  --mdxeditor-active-color: #61dafb;
-}
-
 .code-editor {
-  flex: 1;
-  border-bottom: 1px solid #333;
-  min-height: 500px;
+  height: 70%;
+  border-bottom: 0.0625rem solid #333; /* 1px */
+  display: flex;
+  flex-direction: column;
 }
 
 .code-editor button {
-  align-self: flex-start;
+  align-self: center;
   background: #61dafb;
   color: #000;
   border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
+  padding: 0.5rem 1rem; /* 8px 16px */
+  border-radius: 0.25rem; /* 4px */
   cursor: pointer;
-  margin-top: 10px;
+  margin: 1rem; /* 16px */
+}
+
+.editor-container {
+  flex: 1;
+  min-height: 0;
 }
 
 .results {
-  flex: 1;
+  height: 30%;
   overflow-y: auto;
+  padding-top: 1.25rem; /* 20px */
 }
 
 .spinner {
@@ -110,11 +108,11 @@
 }
 .pass { color: #4caf50; }
 .fail, .error { color: #ff4757; }
-.error { background: #1e1e1e; padding: 10px; border-radius: 4px; }
+.error { background: #1e1e1e; padding: 0.625rem; border-radius: 0.25rem; } /* 10px, 4px */
 
 .divider {
   position: absolute;
-  width: 5px;
+  width: 0.3125rem; /* 5px */
   background-color: #333;
   cursor: col-resize;
   z-index: 10;
