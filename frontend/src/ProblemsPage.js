@@ -67,7 +67,7 @@ const ProblemsPage = () => {
     setLoading(true);
     setResults(null);
     try {
-      const response = await axios.post(`${API_BASE}/execute`, {
+      const response = await axios.post(`${API_BASE}/submission/`, {
         code,
         tests: testCases,
       });
