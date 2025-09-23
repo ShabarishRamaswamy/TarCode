@@ -2,12 +2,31 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
 )
+
+type InputOutput struct {
+	Input  string
+	Output string
+}
+
+type Code struct {
+	Lang       string
+	Code       string
+	Test_Cases []InputOutput
+}
+
+func readBuffer(buf io.ReadCloser) string {
+	opBuf := new(bytes.Buffer)
+	opBuf.ReadFrom(buf)
+	return opBuf.String()
+}
 
 func main() {
 	// Tell Go where to find the static files (the React build)
@@ -18,51 +37,71 @@ func main() {
 	server.Handle("/", fs)
 
 	// There will only be 1 user [For Now]
-	// Body: { "code": "code", "test_cases": [case1, case2, ...] }
+	// Body: { "lang": "c", "code": "code", "test_cases": [case1, case2, ...] }
+	// Future Implementation Notes: Language versions.
 	server.HandleFunc("/api/submission/{id}", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
-			body, err := io.ReadAll(r.Body)
+			idString := r.PathValue("id")
+			fmt.Printf("ID: %v\n", idString)
+
+			var currentCode Code
+			err := json.NewDecoder(r.Body).Decode(&currentCode)
 			if err != nil {
+				fmt.Println(err)
 				http.Error(w, "Can't read body", http.StatusBadRequest)
 				return
 			}
-
-			idString := r.PathValue("id")
-			fmt.Printf("ID: %v", idString)
-
-			fmt.Println(string(body))
+			fmt.Printf("%+v", currentCode)
 
 			// Save the file
-			// err = os.WriteFile(fmt.Sprintf("%s/%s", "./submissions", idString), body, 0644)
-			// check(err)
-
-			// Compile & Run (PYTHON example)
-			out, err := exec.Command("python3", "./submissions/123.py").Output()
+			err = os.WriteFile(fmt.Sprintf("%s/%s.%s", "./submissions", idString, currentCode.Lang), []byte(currentCode.Code), 0644)
 			if err != nil {
-				log.Fatal(err)
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+				return
 			}
-			fmt.Printf("Output: %s\n", out)
+
+			if currentCode.Lang == "py" {
+				// Compile & Run (PYTHON example)
+				out, err := exec.Command("python3", fmt.Sprintf("%s/%s.%s", "./submissions", idString, currentCode.Lang)).Output()
+				if err != nil {
+					log.Fatal(err)
+				}
+				fmt.Printf("Output: %s\n", out)
+				return
+			}
 
 			// Compile and Run (C example)
 			// Compile
-			cmd := exec.Command("gcc", "./submissions/123.c", "-o", "./submissions/123.out")
+			// NOTE: Implement a struct mapping a lang and it's expected output
+			cmd := exec.Command("gcc", fmt.Sprintf("%s/%s.%s", "./submissions", idString, currentCode.Lang), "-o", fmt.Sprintf("%s/%s.%s", "./submissions", idString, "out"))
+
+			stderr, err := cmd.StderrPipe()
+			if err != nil {
+				log.Fatal(err)
+				return
+			}
+
 			err = cmd.Run()
-			log.Printf("Command finished with error: %v", err)
+			if err != nil {
+				log.Printf("Command finished with error: %v; stderr: %v", err, readBuffer(stderr))
+				return
+			}
 
 			// Run this code
-			cmd = exec.Command("./submissions/123.out")
+			cmd = exec.Command(fmt.Sprintf("%s/%s.%s", "./submissions", idString, "out"))
 			stdout, err := cmd.StdoutPipe()
 			if err != nil {
 				log.Fatal(err)
+				return
 			}
 
 			if err := cmd.Start(); err != nil {
 				log.Fatal(err)
+				return
 			}
 
 			// Get the Results back
-			buf := new(bytes.Buffer)
-			buf.ReadFrom(stdout)
+			buf := readBuffer(stdout)
 
 			fmt.Println("Outout: ", buf)
 
