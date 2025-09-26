@@ -9,17 +9,18 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 type InputOutput struct {
-	Input  string
-	Output string
+	Input  string `json:"input"`
+	Output string `json:"output"`
 }
 
 type Code struct {
-	Lang       string
-	Code       string
-	Test_Cases []InputOutput
+	Lang       string        `json:"lang"`
+	Code       string        `json:"code"`
+	Test_Cases []InputOutput `json:"test_cases"`
 }
 
 func readBuffer(buf io.ReadCloser) string {
@@ -51,7 +52,7 @@ func main() {
 				http.Error(w, "Can't read body", http.StatusBadRequest)
 				return
 			}
-			fmt.Printf("%+v", currentCode)
+			// fmt.Printf("%+v\n", currentCode)
 
 			// Save the file
 			err = os.WriteFile(fmt.Sprintf("%s/%s.%s", "./submissions", idString, currentCode.Lang), []byte(currentCode.Code), 0644)
@@ -83,12 +84,14 @@ func main() {
 
 			err = cmd.Run()
 			if err != nil {
-				log.Printf("Command finished with error: %v; stderr: %v", err, readBuffer(stderr))
+				log.Printf("Command finished with error: %v; stderr: %v\n", err, readBuffer(stderr))
 				return
 			}
 
 			// Run this code
 			cmd = exec.Command(fmt.Sprintf("%s/%s.%s", "./submissions", idString, "out"))
+
+			// Standard Out of the executable
 			stdout, err := cmd.StdoutPipe()
 			if err != nil {
 				log.Fatal(err)
@@ -102,10 +105,27 @@ func main() {
 
 			// Get the Results back
 			buf := readBuffer(stdout)
+			fmt.Printf("Output: %+v\n", buf)
 
-			fmt.Println("Outout: ", buf)
+			// outputFromTheCP
+			bufSplit := strings.Split(buf, "\n")
+			// for i := range bufSplit {
+			// 	fmt.Printf("%+vth bufSplit: %+v", i, bufSplit[i])
+			// }
+			outputFromTheCP := bufSplit[len(bufSplit)-2]
 
 			// Compare with the given test cases
+			for k, v := range currentCode.Test_Cases {
+				fmt.Println(k, v)
+
+				fmt.Printf("Test Case Input -> %+v: Expected: %+v Output -> %+v\n", v.Input, v.Output, outputFromTheCP)
+				if v.Output == outputFromTheCP {
+					fmt.Println("Match!")
+				} else {
+					fmt.Println("Don't Match ahh!")
+				}
+
+			}
 
 			fmt.Fprintf(w, "Submission received!")
 			return
