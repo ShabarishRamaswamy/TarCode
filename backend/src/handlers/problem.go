@@ -3,14 +3,12 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"strings"
 
 	"github.com/ShabarishRamaswamy/TarCode/backend/src/models"
-	"github.com/ShabarishRamaswamy/TarCode/backend/src/utils"
+	"github.com/ShabarishRamaswamy/TarCode/backend/src/runner"
 )
 
 // There will only be 1 user [For Now]
@@ -31,6 +29,7 @@ func HandlePOSTProblem(w http.ResponseWriter, r *http.Request) {
 		// fmt.Printf("%+v\n", currentCode)
 
 		// Save the file
+		// Output of this line: ./submissions/abc.c
 		err = os.WriteFile(fmt.Sprintf("%s/%s.%s", "./submissions", idString, currentCode.Lang), []byte(currentCode.Code), 0644)
 		if err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -38,50 +37,10 @@ func HandlePOSTProblem(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if currentCode.Lang == "py" {
-			// Compile & Run (PYTHON example)
-			out, err := exec.Command("python3", fmt.Sprintf("%s/%s.%s", "./submissions", idString, currentCode.Lang)).Output()
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Printf("Output: %s\n", out)
-			return
+			runner.PythonRunner(idString, currentCode.Lang)
 		}
 
-		// Compile and Run (C example)
-		// Compile
-		// NOTE: Implement a struct mapping a lang and it's expected output
-		cmd := exec.Command("gcc", fmt.Sprintf("%s/%s.%s", "./submissions", idString, currentCode.Lang), "-o", fmt.Sprintf("%s/%s.%s", "./submissions", idString, "out"))
-
-		stderr, err := cmd.StderrPipe()
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-
-		err = cmd.Run()
-		if err != nil {
-			log.Printf("Command finished with error: %v; stderr: %v\n", err, utils.ReadBuffer(stderr))
-			return
-		}
-
-		// Run this code
-		cmd = exec.Command(fmt.Sprintf("%s/%s.%s", "./submissions", idString, "out"))
-
-		// Standard Out of the executable
-		stdout, err := cmd.StdoutPipe()
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-
-		if err := cmd.Start(); err != nil {
-			log.Fatal(err)
-			return
-		}
-
-		// Get the Results back
-		buf := utils.ReadBuffer(stdout)
-		fmt.Printf("Output: %+v\n", buf)
+		buf := runner.CRunner(idString, currentCode.Lang)
 
 		// outputFromTheCP
 		bufSplit := strings.Split(buf, "\n")
