@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
-	"strings"
 
 	"github.com/ShabarishRamaswamy/TarCode/backend/src/models"
 	"github.com/ShabarishRamaswamy/TarCode/backend/src/runner"
@@ -30,7 +28,7 @@ func HandlePOSTProblem(w http.ResponseWriter, r *http.Request) {
 
 		// Save the file
 		// Output of this line: ./submissions/abc.c
-		err = os.WriteFile(fmt.Sprintf("%s/%s.%s", "./submissions", idString, currentCode.Lang), []byte(currentCode.Code), 0644)
+		err = runner.SaveUserProgram(fmt.Sprintf("%s/%s.%s", "./submissions", idString, currentCode.Lang), []byte(currentCode.Code))
 		if err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
@@ -42,24 +40,9 @@ func HandlePOSTProblem(w http.ResponseWriter, r *http.Request) {
 
 		buf := runner.CRunner(idString, currentCode.Lang)
 
-		// outputFromTheCP
-		bufSplit := strings.Split(buf, "\n")
-		// for i := range bufSplit {
-		// 	fmt.Printf("%+vth bufSplit: %+v", i, bufSplit[i])
-		// }
-		outputFromTheCP := bufSplit[len(bufSplit)-2]
+		finalOutput := runner.ParseOutput(buf)
 
-		// Compare with the given test cases
-		for k, v := range currentCode.Test_Cases {
-			fmt.Println(k, v)
-
-			fmt.Printf("Test Case Input -> %+v: Expected: %+v Output -> %+v\n", v.Input, v.Output, outputFromTheCP)
-			if v.Output == outputFromTheCP {
-				fmt.Println("Match!")
-			} else {
-				fmt.Println("Don't Match ahh!")
-			}
-		}
+		runner.EvaluateTestCases(finalOutput, currentCode.Test_Cases)
 
 		fmt.Fprintf(w, "Submission received!")
 		return
