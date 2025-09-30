@@ -30,6 +30,7 @@ func HandlePOSTProblem(w http.ResponseWriter, r *http.Request) {
 		// Output of this line: ./submissions/abc.c
 		err = runner.SaveUserProgram(fmt.Sprintf("%s/%s.%s", "./submissions", idString, currentCode.Lang), []byte(currentCode.Code))
 		if err != nil {
+			fmt.Println(err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}

@@ -12,8 +12,8 @@ func main() {
 	server := src.GetRoutes()
 
 	// Start the server on port 8000 and log any errors
-	log.Println("Listening on :8001...")
-	err := http.ListenAndServe(":8001", server)
+	log.Println("Listening on :8000...")
+	err := http.ListenAndServe(":8000", server)
 	if err != nil {
 		log.Fatal(err)
 	}
