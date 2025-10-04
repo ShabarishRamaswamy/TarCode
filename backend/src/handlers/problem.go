@@ -43,9 +43,10 @@ func HandlePOSTProblem(w http.ResponseWriter, r *http.Request) {
 
 		finalOutput := runner.ParseOutput(buf)
 
-		runner.EvaluateTestCases(finalOutput, currentCode.Test_Cases)
+		testCaseOutcome := runner.EvaluateTestCases(finalOutput, currentCode.Test_Cases)
 
-		fmt.Fprintf(w, "Submission received!")
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(testCaseOutcome)
 		return
 	}
 }

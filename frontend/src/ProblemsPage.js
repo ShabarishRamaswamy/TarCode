@@ -5,7 +5,8 @@ import Editor from '@monaco-editor/react';
 import ReactMarkdown from 'react-markdown';
 import './ProblemsPage.css';
 
-const API_BASE = 'http://localhost:8001/api';
+// The proxy in package.json will handle routing this to the correct backend port in development.
+const API_BASE = '/api';
 
 const ProblemsPage = () => {
   // State for a single problem
@@ -15,7 +16,7 @@ const ProblemsPage = () => {
 
   // State for code editor and results
   const [code, setCode] = useState(`#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    return 0;\n}`);
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState(null); // This will hold the array of JudgedResult objects
   const [loading, setLoading] = useState(false);
 
   // Refs and logic for the resizable layout
@@ -46,17 +47,8 @@ const ProblemsPage = () => {
   };
 
   const saveProblem = async () => {
-    const payload = {
-      statement: problemStatement,
-      testCases: testCases.filter((tc) => tc.input || tc.expected),
-    };
-    try {
-      await axios.post(`${API_BASE}/problems`, payload);
-      alert('Problem saved successfully!');
-    } catch (error) {
-      console.error('Error saving problem:', error);
-      alert('Failed to save problem.');
-    }
+    // This function can be built out later
+    alert('Save functionality not yet implemented.');
   };
 
   const runCode = async () => {
@@ -66,14 +58,20 @@ const ProblemsPage = () => {
     }
     setLoading(true);
     setResults(null);
+
+    const payload = {
+      lang: "c",
+      code: code,
+      test_cases: testCases.map(tc => ({ input: tc.input, output: tc.expected }))
+    };
+
     try {
-      const response = await axios.post(`${API_BASE}/submission/`, {
-        code,
-        tests: testCases,
-      });
-      setResults(response.data);
+      const response = await axios.post(`${API_BASE}/submission/123`, payload);
+      // **FIX:** Ensure the response data is always treated as an array.
+      setResults(Array.isArray(response.data) ? response.data : [response.data]);
     } catch (error) {
-      setResults({ error: error.response?.data?.message || 'Execution failed' });
+      const errorMessage = error.response?.data?.message || 'Execution failed on the server.';
+      setResults([{ error: errorMessage }]); // Store error in a consistent array format
     } finally {
       setLoading(false);
     }
@@ -157,12 +155,12 @@ const ProblemsPage = () => {
           {testCases.map((tc, index) => (
             <div key={index} className="test-case">
               <input
-                placeholder="Input (e.g., 1 2)"
+                placeholder="Input"
                 value={tc.input}
                 onChange={(e) => updateTestCase(index, 'input', e.target.value)}
               />
               <input
-                placeholder="Expected Output (e.g., 3)"
+                placeholder="Expected Output"
                 value={tc.expected}
                 onChange={(e) => updateTestCase(index, 'expected', e.target.value)}
               />
@@ -204,22 +202,36 @@ const ProblemsPage = () => {
         <div className="results">
           <h3>Results</h3>
           {loading && <div className="spinner">Loading...</div>}
-          {results && !results.error && (
-            <div>
-              <p>Time: {results.time}s</p>
-              <ul>
-                {results.results.map((result, index) => (
-                  <li key={index} className={result.passed ? 'pass' : 'fail'}>
-                    <strong>Test {index + 1}:</strong> Input: {testCases[index].input}<br />
-                    Output: {result.output}<br />
-                    Expected: {testCases[index].expected}<br />
-                    Status: {result.passed ? 'Passed' : 'Failed'}
-                  </li>
-                ))}
-              </ul>
+          
+          {/* Refactored Rendering Logic */}
+          {!loading && results && (
+            <div className="results-list">
+              {results[0]?.error ? (
+                <div className="error">Error: {results[0].error}</div>
+              ) : (
+                results.map((item, index) => (
+                  <div key={index} className={`result-item ${item.result ? 'pass' : 'fail'}`}>
+                    <div className="result-header">
+                      <strong>Test Case {index + 1}</strong>
+                      <strong className={`status ${item.result ? 'pass' : 'fail'}`}>
+                        {item.result ? 'Passed' : 'Failed'}
+                      </strong>
+                    </div>
+                    <div className="result-body">
+                      <div>
+                        <label>Test Case Input</label>
+                        <pre>{item.test_case.input || ' '}</pre>
+                      </div>
+                      <div>
+                        <label>Expected Output</label>
+                        <pre>{item.test_case.output || ' '}</pre>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           )}
-          {results?.error && <div className="error">Error: {results.error}</div>}
         </div>
       </div>
     </div>
@@ -227,3 +239,4 @@ const ProblemsPage = () => {
 };
 
 export default ProblemsPage;
+
