@@ -7,13 +7,15 @@ import (
 	"github.com/ShabarishRamaswamy/TarCode/backend/src"
 )
 
+var PORT string = ":8000"
+
 func main() {
 	// Tell Go where to find the static files (the React build)
 	server := src.GetRoutes()
 
 	// Start the server on port 8000 and log any errors
-	log.Println("Listening on :8000...")
-	err := http.ListenAndServe(":8000", server)
+	log.Println("Listening on ", PORT)
+	err := http.ListenAndServe(PORT, server)
 	if err != nil {
 		log.Fatal(err)
 	}

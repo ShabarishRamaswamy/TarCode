@@ -2,51 +2,35 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/ShabarishRamaswamy/TarCode/backend/src/models"
 	"github.com/ShabarishRamaswamy/TarCode/backend/src/runner"
 )
 
-// There will only be 1 user [For Now]
-// Body: { "lang": "c", "code": "code", "test_cases": [case1, case2, ...] }
-// Future Implementation Notes: Language versions.
 func HandlePOSTProblem(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		idString := r.PathValue("id")
-		fmt.Printf("ID: %v\n", idString)
+		log.Printf("Got submission for ID: %s", idString)
 
 		var currentCode models.Code
 		err := json.NewDecoder(r.Body).Decode(&currentCode)
 		if err != nil {
-			fmt.Println(err)
+			log.Printf("Failed to decode request body for ID %s: %v", idString, err)
 			http.Error(w, "Can't read body", http.StatusBadRequest)
 			return
 		}
-		// fmt.Printf("%+v\n", currentCode)
 
-		// Save the file
-		// Output of this line: ./submissions/abc.c
-		err = runner.SaveUserProgram(fmt.Sprintf("%s/%s.%s", "./submissions", idString, currentCode.Lang), []byte(currentCode.Code))
+		testCaseOutcome, err := runner.RunProcessingLoop(idString, currentCode)
 		if err != nil {
-			fmt.Println(err)
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
+			log.Printf("Failed to handle the request with ID %s: %v", idString, err)
+			// TODO: This can be 400 or 500
+			http.Error(w, "Failed to handle your request", http.StatusBadRequest)
 		}
-
-		if currentCode.Lang == "py" {
-			runner.PythonRunner(idString, currentCode.Lang)
-		}
-
-		buf := runner.CRunner(idString, currentCode.Lang)
-
-		finalOutput := runner.ParseOutput(buf)
-
-		testCaseOutcome := runner.EvaluateTestCases(finalOutput, currentCode.Test_Cases)
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(testCaseOutcome)
+		json.NewEncoder(w).Encode(testCaseOutcome.([]models.JudgedResult))
 		return
 	}
 }
