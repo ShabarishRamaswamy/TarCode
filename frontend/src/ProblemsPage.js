@@ -10,13 +10,13 @@ const API_BASE = '/api';
 
 const ProblemsPage = () => {
   // State for a single problem
-  const [problemStatement, setProblemStatement] = useState("**Problem Title**\n\nEnter your markdown-enabled problem description here.");
-  const [markdownMode, setMarkdownMode] = useState('editor'); // 'editor' or 'preview'
+  const [problemStatement, setProblemStatement] = useState('');
+  const [markdownMode, setMarkdownMode] = useState('preview');
   const [testCases, setTestCases] = useState([{ input: '', expected: '' }]);
 
   // State for code editor and results
   const [code, setCode] = useState(`#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    return 0;\n}`);
-  const [results, setResults] = useState(null); // This will hold the array of JudgedResult objects
+  const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Refs and logic for the resizable layout
@@ -24,6 +24,25 @@ const ProblemsPage = () => {
   const [dividerPosition, setDividerPosition] = useState(40);
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    const fetchProblem = async () => {
+      try {
+        // **Modified:** Updated the URL to fetch the template file.
+        const response = await fetch('problems/problem-template.md');
+        if (!response.ok) {
+          throw new Error('Problem file not found');
+        }
+        const text = await response.text();
+        setProblemStatement(text);
+      } catch (error) {
+        console.error('Failed to fetch problem statement:', error);
+        setProblemStatement('**Error:** Could not load the problem statement.');
+      }
+    };
+
+    fetchProblem();
+  }, []); // Empty dependency array ensures this runs only once
 
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
@@ -47,7 +66,6 @@ const ProblemsPage = () => {
   };
 
   const saveProblem = async () => {
-    // This function can be built out later
     alert('Save functionality not yet implemented.');
   };
 
@@ -67,11 +85,10 @@ const ProblemsPage = () => {
 
     try {
       const response = await axios.post(`${API_BASE}/submission/123`, payload);
-      // **FIX:** Ensure the response data is always treated as an array.
       setResults(Array.isArray(response.data) ? response.data : [response.data]);
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Execution failed on the server.';
-      setResults([{ error: errorMessage }]); // Store error in a consistent array format
+      setResults([{ error: errorMessage }]);
     } finally {
       setLoading(false);
     }
@@ -123,8 +140,8 @@ const ProblemsPage = () => {
           <div className="section-header">
             <h3>Problem Statement</h3>
             <div className="view-toggle">
-              <button onClick={() => setMarkdownMode('editor')} className={markdownMode === 'editor' ? 'active' : ''}>Editor</button>
               <button onClick={() => setMarkdownMode('preview')} className={markdownMode === 'preview' ? 'active' : ''}>Preview</button>
+              <button onClick={() => setMarkdownMode('editor')} className={markdownMode === 'editor' ? 'active' : ''}>Editor</button>
             </div>
           </div>
           <div className="markdown-container">
@@ -203,7 +220,6 @@ const ProblemsPage = () => {
           <h3>Results</h3>
           {loading && <div className="spinner">Loading...</div>}
           
-          {/* Refactored Rendering Logic */}
           {!loading && results && (
             <div className="results-list">
               {results[0]?.error ? (
@@ -239,4 +255,3 @@ const ProblemsPage = () => {
 };
 
 export default ProblemsPage;
-
