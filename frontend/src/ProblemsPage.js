@@ -1,9 +1,11 @@
-// src/ProblemsPage.js
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import Editor from '@monaco-editor/react';
 import ReactMarkdown from 'react-markdown';
 import './ProblemsPage.css';
+
+import { createKeydownHandler } from './keyCombinationListener.js';
+import { handlePaste } from './parsePastedSourceCode.js';
 
 // The proxy in package.json will handle routing this to the correct backend port in development.
 const API_BASE = '/api';
@@ -25,10 +27,16 @@ const ProblemsPage = () => {
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef(null);
 
+  // This function runs when the Monaco editor is finished mounting.
+  const handleEditorDidMount = (editor, monaco) => {
+    const handleEditorKeyDown = createKeydownHandler(handlePaste);
+    editor.onKeyDown(handleEditorKeyDown);
+  };
+
+  // Effect for fetching the initial problem data and setting up a standard paste listener
   useEffect(() => {
     const fetchProblem = async () => {
       try {
-        // **Modified:** Updated the URL to fetch the template file.
         const response = await fetch('problems/problem-template.md');
         if (!response.ok) {
           throw new Error('Problem file not found');
@@ -42,11 +50,14 @@ const ProblemsPage = () => {
     };
 
     fetchProblem();
-  }, []); // Empty dependency array ensures this runs only once
 
-  const handleEditorDidMount = (editor, monaco) => {
-    editorRef.current = editor;
-  };
+    // A standard 'paste' event listener for non-editor pasting (e.g., right-click)
+    window.addEventListener('paste', handlePaste);
+    
+    return () => {
+        window.removeEventListener('paste', handlePaste);
+    }
+  }, []);
 
   const handleEditorResize = useCallback(() => {
     if (editorRef.current) {
@@ -151,6 +162,7 @@ const ProblemsPage = () => {
                 language="markdown"
                 value={problemStatement}
                 onChange={setProblemStatement}
+                onMount={handleEditorDidMount}
                 theme="vs-dark"
                 options={{
                   minimap: { enabled: false },
