@@ -78,14 +78,16 @@ int square(int num);
 // The main function is used for running test cases.
 int main() {
     // Test Case 1
-    printf("Test Case Input: 5\nTest Case Output: 25\n");
+    printf("Test Case Input: 5\n");
+    printf("Test Case Expected Output: 25\n");
     int result1 = square(5);
-    printf("Test Case Output:\n%d\n\n", result1);
+    printf("Test Case Actual Output:\n%d\n\n", result1);
 
     // Test Case 2
-    printf("Test Case Input: 12\nTest Case Output: 144\n");
+    printf("Test Case Input: 12\n");
+    printf("Test Case Expected Output: 144\n");
     int result2 = square(12);
-    printf("Test Case Output:\n%d\n\n", result2);
+    printf("Test Case Actual Output:\n%d\n\n", result2);
 
     return 0;
 }

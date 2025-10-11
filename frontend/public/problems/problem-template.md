@@ -12,8 +12,9 @@ This can be done manually or using LLMs which are good at doing following basic 
 1. You main function should not have any of the CP problem logic. The main function is only supposed to call the CP function, get its results and print it.
 
 1. The main function MUST print the return value from the CP function. This will be used to check if the test was successful or not.
-    - Before printing each test case, print expected input/output: `Test Case Input: InputValue<newLine>Test Case Output: ExpectedTestCaseOutput`
-    - While printing each tests, you should annotate it: `Test Case Output:<newLine>MainOutput`
+    - Before printing each test case, print expected input/output: `Test Case Input: InputValue<newLine>` and `Test Case Expected Output: ExpectedTestCaseOutput`
+    - While printing each tests, you should annotate it: `Test Case Actual Output: MainOutput<newLine>`
+    - Do not put both input and output print statements in the same line.
 
 ### CP function
 1. Make a separate function for your CP probem. It can take in anything and return anything.

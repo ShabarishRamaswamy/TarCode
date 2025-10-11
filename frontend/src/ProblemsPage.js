@@ -1,5 +1,6 @@
 // src/ProblemsPage.js
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import {ParseCodeAndReturnIO} from "./parseCode";
 import axios from 'axios';
 import Editor from '@monaco-editor/react';
 import ReactMarkdown from 'react-markdown';
@@ -70,8 +71,8 @@ const ProblemsPage = () => {
   };
 
   const parseCode = () => {
-    // Future logic to parse code and populate test cases will go here.
-    alert('Parse functionality not yet implemented.');
+    var [inputs, expectedOutputs] = ParseCodeAndReturnIO(code);
+    console.log("Parsed", inputs, expectedOutputs)
   };
 
   const runCode = async () => {
