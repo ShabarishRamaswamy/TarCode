@@ -53,6 +53,20 @@
   border-color: #61dafb;
 }
 
+.parse-btn {
+  background: transparent;
+  color: #888;
+  border: 1px solid #333;
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  border-radius: 0.25rem;
+}
+
+.parse-btn:hover {
+  background-color: #333;
+  color: #fff;
+}
+
 .markdown-container {
   flex-grow: 1;
   min-height: 0;
@@ -215,4 +229,3 @@
   top: 0;
   bottom: 0;
 }
-

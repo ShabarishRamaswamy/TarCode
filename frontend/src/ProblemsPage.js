@@ -69,6 +69,11 @@ const ProblemsPage = () => {
     alert('Save functionality not yet implemented.');
   };
 
+  const parseCode = () => {
+    // Future logic to parse code and populate test cases will go here.
+    alert('Parse functionality not yet implemented.');
+  };
+
   const runCode = async () => {
     if (!testCases.length || testCases.every(tc => !tc.input && !tc.expected)) {
       alert('Add at least one test case!');
@@ -194,7 +199,10 @@ const ProblemsPage = () => {
       ></div>
       <div className="right-panel" style={{ width: `${100 - dividerPosition}%` }}>
         <div className="code-editor">
-          <h3>Code Editor</h3>
+          <div className="section-header">
+            <h3>Code Editor</h3>
+            <button onClick={parseCode} className="parse-btn">Parse</button>
+          </div>
           <div className="editor-container">
             <Editor
               height="100%"
