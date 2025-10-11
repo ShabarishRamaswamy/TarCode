@@ -10,7 +10,7 @@ I have chosen these design decisions for V1:
 - I will only be testing V1 with `int` and `string` outputs. Rest will be done in later versions.
 
 # Current State of Frontend:
-<img src="./frontend/dev-docs/Screenshot 2025-10-04 at 4.30.29 PM.png" />
+<img src="./frontend/dev-docs/Screenshot 2025-10-10 at 11.44.30 PM.png" />
 
 # Instruction for Running
 NOTE: Make sure to have docker on system.

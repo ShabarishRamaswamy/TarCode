@@ -93,6 +93,7 @@
   display: flex;
   gap: 0.625rem;
   margin-bottom: 0.625rem;
+  align-items: center;
 }
 
 .test-case input {
@@ -105,20 +106,44 @@
   font-family: monospace;
 }
 
-.test-cases-section button {
+.test-cases-section > button {
   background: #4caf50;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;
   cursor: pointer;
+  margin-top: 0.5rem;
   margin-right: 0.625rem;
 }
 
-.test-cases-section button.save-btn {
+.test-cases-section > button.save-btn {
   background: #61dafb;
   color: #000;
 }
+
+.remove-tc-btn {
+  background: transparent;
+  border: 1px solid #ff4757;
+  color: #ff4757;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: bold;
+  flex-shrink: 0;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.remove-tc-btn:hover {
+  background-color: #ff4757;
+  color: #fff;
+}
+
 
 .code-editor {
   height: 70%;
