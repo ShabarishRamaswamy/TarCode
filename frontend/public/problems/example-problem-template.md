@@ -19,8 +19,7 @@ This can be done manually or using LLMs which are good at doing following basic 
 ### CP function
 1. Make a separate function for your CP probem. It can take in anything and return anything.
 
-<hr>
-Misc:
+### Misc:
 - Make sure to have imports.
 - Make sure to declare the functions before implementing them.
 - Do not write back this template in the final output code.

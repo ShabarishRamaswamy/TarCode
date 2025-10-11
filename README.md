@@ -10,7 +10,7 @@ I have chosen these design decisions for V1:
 - I will only be testing V1 with `int` and `string` outputs. Rest will be done in later versions.
 
 # Current State of Frontend:
-<img src="./frontend/dev-docs/Screenshot 2025-10-10 at 11.44.30 PM.png" />
+<img src="./frontend/dev-docs/Screenshot 2025-10-11 at 1.06.57 PM.png" />
 
 # Instruction for Running
 NOTE: Make sure to have docker on system.
@@ -25,5 +25,6 @@ I use podman for development.
 - [x] React app for the Code Editor UI.
 - [x] Go Server for Compilation and Running the code.
 - [x] Test cases and server side validation of the test cases against the source code.
+- [x] Auto-Parsing of code and populating the test cases.
 
 - [] Hide/Unhide test cases

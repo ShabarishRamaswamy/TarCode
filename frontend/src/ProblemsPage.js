@@ -16,7 +16,7 @@ const ProblemsPage = () => {
   const [testCases, setTestCases] = useState([{ input: '', expected: '' }]);
 
   // State for code editor and results
-  const [code, setCode] = useState(`#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    return 0;\n}`);
+  const [code, setCode] = useState('');
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -29,16 +29,24 @@ const ProblemsPage = () => {
   useEffect(() => {
     const fetchProblem = async () => {
       try {
-        // **Modified:** Updated the URL to fetch the template file.
-        const response = await fetch('problems/problem-template.md');
-        if (!response.ok) {
+        const statementResponse = await fetch('problems/example-problem-template.md');
+        if (!statementResponse.ok) {
           throw new Error('Problem file not found');
         }
-        const text = await response.text();
-        setProblemStatement(text);
+        const statementText = await statementResponse.text();
+        setProblemStatement(statementText);
+
+        const codeResponse = await fetch('problems/example-problem.c');
+        if (!codeResponse.ok) {
+            throw new Error('Problem code not found');
+        }
+        const codeText = await codeResponse.text();
+        setCode(codeText);
+
       } catch (error) {
-        console.error('Failed to fetch problem statement:', error);
+        console.error('Failed to fetch problem:', error);
         setProblemStatement('**Error:** Could not load the problem statement.');
+        setCode('// Could not load the problem code.');
       }
     };
 
