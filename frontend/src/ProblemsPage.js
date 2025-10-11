@@ -71,8 +71,23 @@ const ProblemsPage = () => {
   };
 
   const parseCode = () => {
-    var [inputs, expectedOutputs] = ParseCodeAndReturnIO(code);
-    console.log("Parsed", inputs, expectedOutputs)
+    const [inputs, expectedOutputs] = ParseCodeAndReturnIO(code);
+    // console.log("Parsed", inputs, expectedOutputs);
+
+    // Ensure we have valid, matching arrays to work with
+    if (!inputs || !expectedOutputs || inputs.length === 0 || inputs.length !== expectedOutputs.length) {
+      alert("No valid test cases were found or parsed from the code.");
+      return;
+    }
+
+    // Map the parsed arrays to the format required by the state
+    const newTestCases = inputs.map((inputValue, index) => ({
+      input: inputValue,
+      expected: expectedOutputs[index],
+    }));
+
+    // Update the state to re-render the UI with the new test cases
+    setTestCases(newTestCases);
   };
 
   const runCode = async () => {
