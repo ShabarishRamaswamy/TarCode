@@ -25,14 +25,12 @@ func RunProcessingLoop(idString string, currentCode models.Code) (interface{}, e
 	case "c":
 		allTestCaseOutcomes := []models.JudgedResult{}
 
-		for _, test_case := range currentCode.Test_Cases {
-			fmt.Printf("%+v\n", test_case)
+		// Output of this line: stdout buffer
+		buf := CRunner(idString, currentCode.Lang)
 
-			// Output of this line: stdout buffer
-			buf := CRunner(idString, currentCode.Lang)
-
+		for idx, test_case := range currentCode.Test_Cases {
 			// Output of this line: Last non-empty print statement
-			finalOutput := ParseOutput(buf)
+			finalOutput := ParseOutput(buf, uint8(idx))
 
 			// Output of this line: True/False if each test case passes
 			allTestCaseOutcomes = append(allTestCaseOutcomes, EvaluateTestCases(finalOutput, test_case))

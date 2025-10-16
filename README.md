@@ -9,8 +9,8 @@ I have chosen these design decisions for V1:
 - I will read the output and answer from StdOut. Last printed line will be considered as the output of the program.
 - I will only be testing V1 with `int` and `string` outputs. Rest will be done in later versions.
 
-# Current State of Frontend:
-<img src="./frontend/dev-docs/Screenshot 2025-10-11 at 1.06.57 PM.png" />
+# Current State of the App:
+<img src="./frontend/dev-docs/Screenshot 2025-10-15 at 10.43.25 PM.png" />
 
 # Instruction for Running
 NOTE: Make sure to have docker on system.

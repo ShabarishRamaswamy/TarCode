@@ -15,3 +15,5 @@ type JudgedResult struct {
 	Test_Case InputOutput `json:"test_case"`
 	Result    bool        `json:"result"`
 }
+
+const TestCaseOutputMsg string = "Test Case Actual Output:"
