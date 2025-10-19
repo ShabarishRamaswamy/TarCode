@@ -28,12 +28,11 @@ func RunProcessingLoop(idString string, currentCode models.Code) (interface{}, e
 		// Output of this line: stdout buffer
 		buf := CRunner(idString, currentCode.Lang)
 
+		// Output of this line: The stdout for all the test cases
+		finalOutput := ParseAllOutputs(buf)
 		for idx, test_case := range currentCode.Test_Cases {
-			// Output of this line: Last non-empty print statement
-			finalOutput := ParseOutput(buf, uint8(idx))
-
 			// Output of this line: True/False if each test case passes
-			allTestCaseOutcomes = append(allTestCaseOutcomes, EvaluateTestCases(finalOutput, test_case))
+			allTestCaseOutcomes = append(allTestCaseOutcomes, EvaluateTestCases(finalOutput[idx], test_case))
 		}
 		return allTestCaseOutcomes, nil
 
